@@ -1,97 +1,648 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ASmap Historical Analysis</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css" />
-  <link rel="stylesheet" href="style.css" />
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>ASMap Analysis Dashboard</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: #0f1117; color: #e2e8f0; font-family: system-ui, -apple-system, sans-serif; font-size: 14px; min-height: 100vh; }
+a { color: #3b82f6; }
+code, .mono { font-family: 'Courier New', monospace; font-size: 12px; }
+
+.container { max-width: 1400px; margin: 0 auto; padding: 24px; }
+
+/* Header */
+.header { display: flex; align-items: baseline; gap: 16px; margin-bottom: 8px; flex-wrap: wrap; }
+.header h1 { font-size: 22px; font-weight: 700; color: #f1f5f9; }
+.header p  { color: #64748b; font-size: 13px; }
+.mvp-badge { background: #1e3a5f; color: #60a5fa; font-size: 11px; padding: 2px 8px; border-radius: 4px; border: 1px solid #2563eb44; white-space: nowrap; }
+.toolbar   { display: flex; justify-content: flex-end; gap: 8px; margin-bottom: 12px; }
+
+button { background: #1e293b; color: #e2e8f0; border: 1px solid #334155; padding: 6px 14px; border-radius: 6px; cursor: pointer; font-size: 13px; }
+button:hover { background: #273449; }
+
+/* Banner */
+.banner { display: none; padding: 10px 16px; border-radius: 6px; margin-bottom: 16px; font-size: 13px; font-weight: 500; }
+.banner-warn { display: block; background: #451a03; color: #fbbf24; border: 1px solid #78350f; }
+.banner-err  { display: block; background: #1f0a0a; color: #f87171; border: 1px solid #7f1d1d; }
+.banner-ok   { display: block; background: #052e16; color: #4ade80; border: 1px solid #14532d; }
+
+/* Summary cards */
+.summary-row { display: flex; gap: 12px; margin-bottom: 24px; flex-wrap: wrap; }
+.stat-card { background: #1a1d27; border: 1px solid #2a2d37; border-radius: 8px; padding: 14px 18px; min-width: 140px; flex: 1; }
+.stat-card .label { font-size: 11px; text-transform: uppercase; letter-spacing: .06em; color: #64748b; margin-bottom: 6px; }
+.stat-card .sublabel { font-size: 10px; color: #475569; margin-top: 2px; }
+.stat-card .value { font-size: 22px; font-weight: 700; line-height: 1.1; color: #f1f5f9; }
+.stat-card .value.small { font-size: 14px; }
+
+/* Badges */
+.badge { display: inline-block; padding: 3px 10px; border-radius: 12px; font-size: 12px; font-weight: 600; }
+.badge-normal     { background: #052e16; color: #4ade80; border: 1px solid #166534; }
+.badge-anomalous  { background: #451a03; color: #fbbf24; border: 1px solid #92400e; }
+.badge-unknown    { background: #1e293b; color: #94a3b8; border: 1px solid #334155; }
+
+/* Charts */
+.charts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
+.chart-card { background: #1a1d27; border: 1px solid #2a2d37; border-radius: 8px; padding: 16px; }
+.chart-card h3 { font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: #64748b; margin-bottom: 4px; }
+.chart-subtitle { font-size: 10px; color: #475569; margin-bottom: 10px; }
+.chart-card canvas { max-height: 200px; cursor: pointer; }
+
+/* Investigation panel */
+#investigation-panel { background: #12151f; border: 1px solid #2563eb55; border-radius: 8px; margin-bottom: 24px; overflow: hidden; max-height: 0; transition: max-height .35s ease; }
+#investigation-panel.open { max-height: 1000px; }
+.inv-header { display: flex; justify-content: space-between; align-items: center; padding: 12px 18px; border-bottom: 1px solid #2a2d37; }
+.inv-header h3 { font-size: 14px; color: #60a5fa; }
+.inv-close { background: none; border: none; color: #64748b; font-size: 18px; cursor: pointer; padding: 0 4px; }
+.inv-close:hover { color: #f1f5f9; background: none; }
+.inv-body { padding: 18px; display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+.inv-verdict { grid-column: 1 / -1; background: #1a1d27; border-radius: 6px; padding: 12px 16px; color: #cbd5e1; font-size: 13px; line-height: 1.7; border-left: 3px solid #3b82f6; }
+.inv-section h4 { font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: #64748b; margin-bottom: 10px; }
+
+/* Tables */
+table { width: 100%; border-collapse: collapse; }
+th { text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: .06em; color: #64748b; padding: 6px 10px; border-bottom: 1px solid #2a2d37; }
+td { padding: 7px 10px; border-bottom: 1px solid #1e2231; font-size: 13px; }
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: #1e2231; }
+.pattern-tag { font-size: 11px; color: #60a5fa; background: #1e3a5f; padding: 1px 6px; border-radius: 3px; margin-left: 6px; }
+
+/* Map history */
+.section { background: #1a1d27; border: 1px solid #2a2d37; border-radius: 8px; padding: 16px; margin-bottom: 24px; }
+.section h2 { font-size: 13px; text-transform: uppercase; letter-spacing: .06em; color: #64748b; margin-bottom: 14px; }
+.churn-normal    { color: #4ade80; font-weight: 600; }
+.churn-anomalous { color: #fbbf24; font-weight: 600; }
+.churn-na        { color: #475569; }
+.row-highlight td { background: #1e2d4a !important; }
+.history-row { cursor: pointer; }
+.gap-badge { font-size: 11px; padding: 1px 6px; border-radius: 3px; }
+.gap-long   { background: #451a03; color: #fbbf24; }
+.gap-normal { color: #475569; }
+
+/* Manifest inspector */
+.accordion-item { border-bottom: 1px solid #2a2d37; }
+.accordion-item:last-child { border-bottom: none; }
+.accordion-toggle { display: flex; justify-content: space-between; align-items: center; padding: 10px 4px; cursor: pointer; font-size: 13px; color: #cbd5e1; }
+.accordion-toggle:hover { color: #f1f5f9; }
+.accordion-arrow { transition: transform .2s; color: #64748b; }
+.accordion-item.open .accordion-arrow { transform: rotate(90deg); }
+.accordion-body { display: none; padding: 0 0 12px; }
+.accordion-item.open .accordion-body { display: block; }
+.manifest-json { background: #0f1117; border: 1px solid #2a2d37; border-radius: 6px; padding: 12px; overflow-x: auto; white-space: pre; font-size: 11px; color: #94a3b8; }
+.fallback-badge { font-size: 11px; background: #451a03; color: #fbbf24; padding: 1px 6px; border-radius: 3px; margin-left: 8px; }
+
+/* Provenance */
+.prov-row { display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px solid #1e2231; font-size: 12px; }
+.prov-key { color: #64748b; }
+.prov-val { color: #cbd5e1; }
+.prov-mismatch .prov-val { color: #f87171; font-weight: 600; }
+
+footer { text-align: center; color: #334155; font-size: 12px; padding: 24px 0 8px; border-top: 1px solid #1e293b; margin-top: 8px; line-height: 2; }
+
+@media (max-width: 900px) {
+  .charts-grid { grid-template-columns: 1fr; }
+  .inv-body { grid-template-columns: 1fr; }
+}
+</style>
 </head>
 <body>
-  <main class="container">
+<div class="container">
 
-    <header>
-      <h1>ASmap Historical Analysis</h1>
-      <p class="subtitle">Bitcoin Core ASmap evolution dashboard</p>
-    </header>
+  <div class="header">
+    <h1>ASMap Analysis Dashboard</h1>
+    <p>Bitcoin Core peer diversity map evolution</p>
+    <span class="mvp-badge">MVP · mock manifests, real map data</span>
+  </div>
 
-    <div id="alert-banner" class="banner-ok">Loading data…</div>
+  <div class="toolbar">
+    <button id="refresh-btn">⟳ Refresh</button>
+  </div>
 
-    <div class="toolbar">
-      <button id="refresh-btn">Refresh</button>
+  <div id="alert-banner" class="banner"></div>
+
+  <div class="summary-row">
+    <div class="stat-card"><div class="label">Latest Classification</div><div class="value" id="sum-cls">—</div></div>
+    <div class="stat-card"><div class="label">IPv4 Changes</div><div class="value mono" id="sum-ipv4">—</div><div class="sublabel" id="sum-ipv4-sub"></div></div>
+    <div class="stat-card"><div class="label">Baseline Range</div><div class="value small mono" id="sum-baseline">—</div><div class="sublabel">/ month (normalized)</div></div>
+    <div class="stat-card"><div class="label">Churn Ratio</div><div class="value mono" id="sum-churn">—</div><div class="sublabel">monthly normalized</div></div>
+    <div class="stat-card"><div class="label">Period</div><div class="value small" id="sum-period">—</div></div>
+    <div class="stat-card"><div class="label">Maps Analyzed</div><div class="value mono" id="sum-maps">—</div></div>
+  </div>
+
+  <div class="charts-grid">
+    <div class="chart-card">
+      <h3>IPv4 Churn Over Time <span style="color:#475569;font-size:10px">· click point to investigate</span></h3>
+      <div class="chart-subtitle">Monthly-normalized · shaded band = baseline ±30%</div>
+      <canvas id="chart-churn"></canvas>
     </div>
+    <div class="chart-card">
+      <h3>Churn Ratio % Over Time</h3>
+      <div class="chart-subtitle">Monthly-normalized churn / total IPv4 prefixes</div>
+      <canvas id="chart-ratio"></canvas>
+    </div>
+    <div class="chart-card">
+      <h3>Total ASNs Over Time</h3>
+      <div class="chart-subtitle">Unique ASNs per map snapshot</div>
+      <canvas id="chart-asns"></canvas>
+    </div>
+    <div class="chart-card">
+      <h3>ASN Turnover Per Diff</h3>
+      <div class="chart-subtitle">New ASNs gained vs lost between maps</div>
+      <canvas id="chart-turnover"></canvas>
+    </div>
+  </div>
 
-    <!-- Latest Run Summary -->
-    <section>
-      <h2>Latest Run</h2>
-      <div class="summary-grid">
-        <div class="stat-card">
-          <div class="label">Classification</div>
-          <div class="value" id="latest-classification">—</div>
-        </div>
-        <div class="stat-card">
-          <div class="label">IPv4 Changes</div>
-          <div class="value" id="latest-ipv4">—</div>
-        </div>
-        <div class="stat-card">
-          <div class="label">Baseline Range</div>
-          <div class="value" id="latest-baseline">—</div>
-        </div>
-        <div class="stat-card">
-          <div class="label">Churn Ratio</div>
-          <div class="value" id="latest-churn-ratio">—</div>
-        </div>
-        <div class="stat-card">
-          <div class="label">Period</div>
-          <div class="value" id="latest-period" style="font-size:1rem">—</div>
-        </div>
+  <div id="investigation-panel">
+    <div class="inv-header">
+      <h3 id="inv-title">Investigation</h3>
+      <button class="inv-close" id="inv-close">×</button>
+    </div>
+    <div class="inv-body">
+      <div class="inv-verdict" id="inv-verdict"></div>
+      <div class="inv-section">
+        <h4>Top ASN Transitions</h4>
+        <table id="inv-asn-table">
+          <thead><tr><th>Old ASN</th><th>New ASN</th><th>Prefixes</th><th>% of Changes</th><th>Pattern</th></tr></thead>
+          <tbody></tbody>
+        </table>
       </div>
-    </section>
-
-    <!-- Charts -->
-    <section class="charts-grid">
-      <div class="chart-card">
-        <h3>IPv4 Churn Over Time</h3>
-        <canvas id="chart-ipv4-churn"></canvas>
+      <div class="inv-section">
+        <h4>Provenance Comparison</h4>
+        <div id="inv-provenance"></div>
       </div>
-      <div class="chart-card">
-        <h3>Churn Ratio (%)</h3>
-        <canvas id="chart-churn-ratio"></canvas>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Map History</h2>
+    <table id="history-table">
+      <thead>
+        <tr>
+          <th>Date</th><th>Epoch</th><th>Total ASNs</th>
+          <th>Total Prefixes</th><th>IPv4</th><th>IPv6</th>
+          <th>Gap (days)</th><th>Churn (IPv4 Δ)</th><th>Normalized/mo</th><th>Classification</th>
+        </tr>
+      </thead>
+      <tbody id="history-body"></tbody>
+    </table>
+  </div>
+
+  <div class="section">
+    <h2>Run Provenance <span style="color:#3b82f6;font-size:12px;cursor:default" title="Manifests are simulated for this MVP">ⓘ Mock</span></h2>
+    <div id="manifest-list"></div>
+  </div>
+
+  <footer>
+    Data source: asmap-data repository (real) &nbsp;·&nbsp; Run manifests: simulated for MVP<br>
+    Built for <strong>Summer of Bitcoin 2026</strong> proposal &nbsp;·&nbsp;
+    <a href="#">GitHub</a> &nbsp;·&nbsp; <a href="#">Bitcoin Core</a>
+  </footer>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
+<script>
+const KNOWN_PATTERNS = {
+  "AS14618,AS16509": "Amazon AWS internal reorganization",
+  "AS16509,AS14618": "Amazon AWS internal reorganization",
+  "AS4134,AS4837":   "China Telecom / China Unicom reallocation",
+  "AS4837,AS4134":   "China Telecom / China Unicom reallocation",
+  "AS3356,AS174":    "Lumen / Cogent routing change",
+  "AS174,AS3356":    "Lumen / Cogent routing change",
+};
+
+const charts = {};
+let DATA = null;
+let activeIdx = null;
+
+async function load() {
+  try {
+    const r = await fetch('timeline.json');
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    DATA = await r.json();
+    render();
+  } catch {
+    const b = document.getElementById('alert-banner');
+    b.innerHTML = '⚠ Could not load timeline.json. Run: <code>python3 build_timeline.py</code> then refresh.';
+    b.className = 'banner banner-err';
+  }
+}
+
+function render() {
+  renderBanner();
+  renderSummary();
+  renderCharts();
+  renderHistoryTable();
+  renderManifests();
+}
+
+// ── Banner ─────────────────────────────────────────────────────────────────
+
+function renderBanner() {
+  const anomalous = DATA.diffs.filter(d => d.classification === 'anomalous');
+  const fallbacks = DATA.maps.filter(m => m.manifest?.routeviews?.fallback_triggered);
+  const b = document.getElementById('alert-banner');
+  const msgs = [];
+  if (anomalous.length) msgs.push(`${anomalous.length} anomalous diff(s) detected`);
+  if (fallbacks.length) msgs.push(`RouteViews fallback triggered in ${fallbacks.length} run(s)`);
+  if (msgs.length) {
+    b.innerHTML = '⚠ ' + msgs.join('  ·  ');
+    b.className = 'banner banner-warn';
+  } else {
+    b.innerHTML = '✔ All diffs within baseline range. No provenance issues detected.';
+    b.className = 'banner banner-ok';
+  }
+}
+
+// ── Summary cards ──────────────────────────────────────────────────────────
+
+function renderSummary() {
+  const last = DATA.diffs[DATA.diffs.length - 1];
+  document.getElementById('sum-cls').innerHTML = badgeHtml(last.classification);
+  document.getElementById('sum-ipv4').textContent = last.ipv4_changes.toLocaleString();
+  document.getElementById('sum-ipv4-sub').textContent = `over ${last.days_between} days`;
+  document.getElementById('sum-baseline').textContent = last.baseline_lower != null
+    ? `${last.baseline_lower.toLocaleString()} – ${last.baseline_upper.toLocaleString()}`
+    : '—';
+  document.getElementById('sum-churn').textContent =
+    (last.monthly_churn_ratio * 100).toFixed(3) + '%';
+  document.getElementById('sum-period').textContent = `${last.from_date} → ${last.to_date}`;
+  document.getElementById('sum-maps').textContent = DATA.maps.length;
+}
+
+function badgeHtml(cls) {
+  const m = {
+    normal:            ['badge-normal',   'Normal'],
+    anomalous:         ['badge-anomalous','Anomalous'],
+    insufficient_data: ['badge-unknown',  'Insufficient Data'],
+  };
+  const [k, l] = m[cls] || ['badge-unknown', cls];
+  return `<span class="badge ${k}">${l}</span>`;
+}
+
+// ── Charts ─────────────────────────────────────────────────────────────────
+
+const SCALE_OPTS = {
+  x: { ticks: { color: '#64748b', font: { size: 11 } }, grid: { color: '#1e2231' } },
+  y: { ticks: { color: '#64748b', font: { size: 11 } }, grid: { color: '#1e2231' } },
+};
+
+function diffLabels() {
+  return DATA.diffs.map(d => d.to_date.slice(5));
+}
+
+function renderCharts() {
+  renderChurnChart();
+  renderRatioChart();
+  renderAsnChart();
+  renderTurnoverChart();
+}
+
+function renderChurnChart() {
+  if (charts.churn) charts.churn.destroy();
+  const diffs  = DATA.diffs;
+  const labels  = diffLabels();
+  const values  = diffs.map(d => d.monthly_normalized_changes);
+  const lowers  = diffs.map(d => d.baseline_lower ?? null);
+  const uppers  = diffs.map(d => d.baseline_upper ?? null);
+  const ptColors = diffs.map(d =>
+    d.classification === 'anomalous'       ? '#f59e0b' :
+    d.classification === 'normal'          ? '#10b981' : '#64748b'
+  );
+  const ptRadius = diffs.map((_, i) => i === activeIdx ? 10 : 5);
+
+  const ctx = document.getElementById('chart-churn').getContext('2d');
+  charts.churn = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [
+        {
+          label: 'Baseline Lower',
+          data: lowers,
+          borderColor: 'transparent',
+          backgroundColor: 'rgba(59,130,246,0.13)',
+          fill: false,
+          pointRadius: 0,
+          tension: 0.3,
+          spanGaps: false,
+        },
+        {
+          label: 'Baseline Upper',
+          data: uppers,
+          borderColor: 'transparent',
+          backgroundColor: 'rgba(59,130,246,0.13)',
+          fill: 0,
+          pointRadius: 0,
+          tension: 0.3,
+          spanGaps: false,
+        },
+        {
+          label: 'Normalized IPv4 Δ/mo',
+          data: values,
+          borderColor: '#3b82f6',
+          backgroundColor: 'rgba(59,130,246,0.05)',
+          pointBackgroundColor: ptColors,
+          pointBorderColor: ptColors,
+          pointRadius: ptRadius,
+          pointHoverRadius: 9,
+          tension: 0.3,
+          fill: false,
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      onClick: (_, elements) => {
+        const main = elements.filter(e => e.datasetIndex === 2);
+        if (main.length) openInvestigation(main[0].index);
+      },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          filter: item => item.datasetIndex === 2,
+          callbacks: {
+            label: ctx => {
+              const d = DATA.diffs[ctx.dataIndex];
+              return [
+                ` Normalized: ${d.monthly_normalized_changes.toLocaleString()}/mo`,
+                ` Raw: ${d.ipv4_changes.toLocaleString()} over ${d.days_between}d`,
+              ];
+            },
+          },
+        },
+      },
+      scales: SCALE_OPTS,
+    },
+  });
+}
+
+function renderRatioChart() {
+  if (charts.ratio) charts.ratio.destroy();
+  const ctx = document.getElementById('chart-ratio').getContext('2d');
+  charts.ratio = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: diffLabels(),
+      datasets: [{
+        data: DATA.diffs.map(d => +(d.monthly_churn_ratio * 100).toFixed(4)),
+        borderColor: '#8b5cf6',
+        backgroundColor: 'rgba(139,92,246,0.08)',
+        pointBackgroundColor: '#8b5cf6',
+        pointRadius: 4, tension: 0.3, fill: true,
+      }],
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { display: false },
+        tooltip: { callbacks: { label: ctx => ` ${ctx.raw.toFixed(4)}% /mo` } },
+      },
+      scales: SCALE_OPTS,
+    },
+  });
+}
+
+function renderAsnChart() {
+  if (charts.asns) charts.asns.destroy();
+  const ctx = document.getElementById('chart-asns').getContext('2d');
+  charts.asns = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: DATA.maps.map(m => m.date.slice(5)),
+      datasets: [{
+        data: DATA.maps.map(m => m.total_asns),
+        borderColor: '#10b981',
+        backgroundColor: 'rgba(16,185,129,0.08)',
+        pointBackgroundColor: '#10b981',
+        pointRadius: 4, tension: 0.3, fill: true,
+      }],
+    },
+    options: { responsive: true, plugins: { legend: { display: false } }, scales: SCALE_OPTS },
+  });
+}
+
+function renderTurnoverChart() {
+  if (charts.turnover) charts.turnover.destroy();
+  const ctx = document.getElementById('chart-turnover').getContext('2d');
+  charts.turnover = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: diffLabels(),
+      datasets: [
+        { label: 'Gained', data: DATA.diffs.map(d => d.asns_gained), backgroundColor: 'rgba(16,185,129,0.7)' },
+        { label: 'Lost',   data: DATA.diffs.map(d => d.asns_lost),   backgroundColor: 'rgba(239,68,68,0.7)' },
+      ],
+    },
+    options: {
+      responsive: true,
+      plugins: { legend: { display: true, labels: { color: '#64748b', font: { size: 11 } } } },
+      scales: SCALE_OPTS,
+    },
+  });
+}
+
+// ── Investigation panel ────────────────────────────────────────────────────
+
+function openInvestigation(idx) {
+  activeIdx = idx;
+  const diff    = DATA.diffs[idx];
+  const fromMap = DATA.maps.find(m => m.date === diff.from_date);
+  const toMap   = DATA.maps.find(m => m.date === diff.to_date);
+
+  document.getElementById('inv-title').textContent =
+    `Investigation: ${diff.from_date} → ${diff.to_date}  (${diff.days_between} days)`;
+
+  document.getElementById('inv-verdict').innerHTML = buildVerdict(diff, fromMap, toMap);
+
+  // ASN transitions
+  const tbody = document.querySelector('#inv-asn-table tbody');
+  tbody.innerHTML = '';
+  const total = diff.ipv4_changes || 1;
+  diff.top_asn_pairs.forEach(([old_asn, new_asn, cnt]) => {
+    const key     = `${old_asn},${new_asn}`;
+    const pattern = KNOWN_PATTERNS[key] || '';
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td class="mono">${old_asn}</td>
+      <td class="mono">${new_asn}</td>
+      <td>${cnt.toLocaleString()}</td>
+      <td>${((cnt / total) * 100).toFixed(2)}%</td>
+      <td>${pattern ? `<span class="pattern-tag">${pattern}</span>` : '<span style="color:#475569">—</span>'}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+  if (!diff.top_asn_pairs.length)
+    tbody.innerHTML = '<tr><td colspan="5" style="color:#475569">No ASN transition data</td></tr>';
+
+  // Provenance
+  document.getElementById('inv-provenance').innerHTML =
+    buildProvenanceHtml(fromMap?.manifest, toMap?.manifest, diff.from_date, diff.to_date);
+
+  document.getElementById('investigation-panel').classList.add('open');
+  document.getElementById('investigation-panel').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+  highlightChartPoint(idx);
+
+  document.querySelectorAll('.history-row').forEach(r => r.classList.remove('row-highlight'));
+  const row = document.querySelector(`.history-row[data-to="${diff.to_date}"]`);
+  if (row) row.classList.add('row-highlight');
+}
+
+function buildVerdict(diff, fromMap, toMap) {
+  const mismatches = provenanceMismatches(fromMap?.manifest, toMap?.manifest);
+  const baseStr    = diff.baseline_lower != null
+    ? `${diff.baseline_lower.toLocaleString()}–${diff.baseline_upper.toLocaleString()}/mo`
+    : null;
+  const position   = diff.classification === 'normal'    ? 'within'
+                   : diff.classification === 'anomalous' ? 'outside' : null;
+  const topPair    = diff.top_asn_pairs[0];
+  const patternLabel = topPair
+    ? (KNOWN_PATTERNS[`${topPair[0]},${topPair[1]}`] || `${topPair[0]} → ${topPair[1]}`)
+    : null;
+  const longGap    = diff.days_between > 45;
+
+  let text = `<strong>${diff.ipv4_changes.toLocaleString()} IPv4 changes</strong> over ${diff.days_between} days`;
+  text += ` (~<strong>${diff.monthly_normalized_changes.toLocaleString()}/month</strong> normalized)`;
+  if (baseStr && position) text += `. ${position === 'within' ? 'Within' : 'Outside'} baseline ${baseStr}`;
+  text += '.';
+  if (patternLabel) text += ` Top contributor: <em>${patternLabel}</em>.`;
+  if (longGap) text += ` <span style="color:#f59e0b">⚠ Extended interval (${diff.days_between} days) — raw counts not directly comparable to monthly runs.</span>`;
+  if (mismatches.length) {
+    text += ` <span style="color:#f87171">⚠ ${mismatches.join('; ')} — results may reflect inconsistent data sources.</span>`;
+  } else {
+    text += ' <span style="color:#4ade80">No data source mismatches detected.</span>';
+  }
+  return text;
+}
+
+function provenanceMismatches(ma, mb) {
+  if (!ma || !mb) return [];
+  const issues = [];
+  if (ma.routeviews?.month_used   !== mb.routeviews?.month_used)   issues.push('RouteViews month mismatch');
+  if (ma.rpki?.repos_success      !== mb.rpki?.repos_success)      issues.push('RPKI success count mismatch');
+  if (ma.irr?.retries             !== mb.irr?.retries)             issues.push('IRR retry difference');
+  if (ma.kartograf_version        !== mb.kartograf_version)        issues.push('Kartograf version mismatch');
+  return issues;
+}
+
+function buildProvenanceHtml(ma, mb, dateA, dateB) {
+  if (!ma || !mb) return '<span style="color:#475569">Manifest data unavailable</span>';
+  const fields = [
+    ['RouteViews month',  ma.routeviews?.month_used,  mb.routeviews?.month_used],
+    ['RV fallback',       String(ma.routeviews?.fallback_triggered), String(mb.routeviews?.fallback_triggered)],
+    ['RPKI success',      `${ma.rpki?.repos_success}/${ma.rpki?.repos_total}`, `${mb.rpki?.repos_success}/${mb.rpki?.repos_total}`],
+    ['IRR retries',       ma.irr?.retries,  mb.irr?.retries],
+    ['Kartograf ver.',    ma.kartograf_version, mb.kartograf_version],
+    ['RPKI client ver.',  ma.rpki_client_version, mb.rpki_client_version],
+  ];
+  const header = `<div style="font-size:12px;color:#64748b;margin-bottom:8px">${dateA} → ${dateB}</div>`;
+  const rows = fields.map(([key, va, vb]) => {
+    const mismatch = String(va) !== String(vb);
+    return `<div class="prov-row ${mismatch ? 'prov-mismatch' : ''}">
+      <span class="prov-key">${key}</span>
+      <span class="prov-val">${va ?? '—'} → ${vb ?? '—'}</span>
+    </div>`;
+  }).join('');
+  return header + rows;
+}
+
+function highlightChartPoint(idx) {
+  if (!charts.churn) return;
+  const ds = charts.churn.data.datasets[2];
+  ds.pointRadius      = DATA.diffs.map((_, i) => i === idx ? 10 : 5);
+  ds.pointBorderWidth = DATA.diffs.map((_, i) => i === idx ? 3 : 1);
+  charts.churn.update('none');
+}
+
+document.getElementById('inv-close').addEventListener('click', () => {
+  document.getElementById('investigation-panel').classList.remove('open');
+  activeIdx = null;
+  if (charts.churn) {
+    const ds = charts.churn.data.datasets[2];
+    ds.pointRadius      = DATA.diffs.map(() => 5);
+    ds.pointBorderWidth = DATA.diffs.map(() => 1);
+    charts.churn.update('none');
+  }
+  document.querySelectorAll('.history-row').forEach(r => r.classList.remove('row-highlight'));
+});
+
+// ── History table ──────────────────────────────────────────────────────────
+
+function renderHistoryTable() {
+  const diffByTo = {};
+  DATA.diffs.forEach(d => { diffByTo[d.to_date] = d; });
+
+  const tbody = document.getElementById('history-body');
+  tbody.innerHTML = '';
+  DATA.maps.forEach(m => {
+    const diff = diffByTo[m.date];
+    let gapCell = '<td class="churn-na">—</td>';
+    let churnCell = '<td class="churn-na">—</td>';
+    let normCell  = '<td class="churn-na">—</td>';
+    let clsCell   = `<td><span class="badge badge-unknown">First Map</span></td>`;
+
+    if (diff) {
+      const longGap = diff.days_between > 45;
+      gapCell = `<td><span class="gap-badge ${longGap ? 'gap-long' : 'gap-normal'}">${diff.days_between}d</span></td>`;
+      const cc = diff.classification === 'normal' ? 'churn-normal' : diff.classification === 'anomalous' ? 'churn-anomalous' : 'churn-na';
+      churnCell = `<td class="${cc}">${diff.ipv4_changes.toLocaleString()}</td>`;
+      normCell  = `<td class="${cc}">${diff.monthly_normalized_changes.toLocaleString()}</td>`;
+      clsCell   = `<td>${badgeHtml(diff.classification)}</td>`;
+    }
+
+    const tr = document.createElement('tr');
+    tr.className = 'history-row';
+    tr.dataset.to = m.date;
+    tr.innerHTML = `
+      <td>${m.date}</td>
+      <td class="mono" style="color:#475569">${m.epoch}</td>
+      <td>${m.total_asns.toLocaleString()}</td>
+      <td>${m.total_prefixes.toLocaleString()}</td>
+      <td>${m.ipv4_prefixes.toLocaleString()}</td>
+      <td>${m.ipv6_prefixes.toLocaleString()}</td>
+      ${gapCell}${churnCell}${normCell}${clsCell}
+    `;
+    tr.addEventListener('click', () => {
+      if (diff) {
+        openInvestigation(DATA.diffs.indexOf(diff));
+        document.getElementById('chart-churn').scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    });
+    tbody.appendChild(tr);
+  });
+}
+
+// ── Manifest inspector ─────────────────────────────────────────────────────
+
+function renderManifests() {
+  const container = document.getElementById('manifest-list');
+  container.innerHTML = '';
+  DATA.maps.forEach(m => {
+    const fallback = m.manifest?.routeviews?.fallback_triggered;
+    const item = document.createElement('div');
+    item.className = 'accordion-item';
+    item.innerHTML = `
+      <div class="accordion-toggle">
+        <span>${m.date} <span class="mono" style="color:#475569">${m.epoch}</span>
+          ${fallback ? '<span class="fallback-badge">⚠ RV Fallback</span>' : ''}
+        </span>
+        <span class="accordion-arrow">▶</span>
       </div>
-      <div class="chart-card">
-        <h3>Total ASNs Over Time</h3>
-        <canvas id="chart-asns"></canvas>
+      <div class="accordion-body">
+        <pre class="manifest-json">${JSON.stringify(m.manifest, null, 2)}</pre>
       </div>
-    </section>
+    `;
+    item.querySelector('.accordion-toggle').addEventListener('click', () => item.classList.toggle('open'));
+    container.appendChild(item);
+  });
+}
 
-    <!-- Map Table -->
-    <section class="table-wrap">
-      <h2>Map History</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>Date</th>
-            <th>Total ASNs</th>
-            <th>Total Prefixes</th>
-            <th>IPv4 Prefixes</th>
-            <th>IPv6 Prefixes</th>
-            <th>Churn (IPv4 Δ)</th>
-          </tr>
-        </thead>
-        <tbody id="map-table-body">
-          <tr><td colspan="6">Loading…</td></tr>
-        </tbody>
-      </table>
-    </section>
+// ── Init ───────────────────────────────────────────────────────────────────
 
-    <footer>
-      <p>Data generated from local ASmap datasets &nbsp;·&nbsp;
-        To update: <code>python3 build_timeline.py</code> then refresh</p>
-    </footer>
-
-  </main>
-
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
-  <script src="app.js"></script>
+document.getElementById('refresh-btn').addEventListener('click', load);
+load();
+</script>
 </body>
 </html>

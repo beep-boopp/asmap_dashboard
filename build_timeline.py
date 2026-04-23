@@ -1,9 +1,8 @@
 """
 build_timeline.py
 
-Discovers ASmap .dat files under ~/asmap-data/, decodes each map to extract
-prefix and ASN metrics, computes diffs between consecutive maps, and writes
-timeline.json for the dashboard.
+Discovers ASmap .dat files, decodes each map, diffs consecutive pairs,
+generates mock manifests, and writes timeline.json for the dashboard.
 
 Usage (from ~/asmap_dashboard/):
     python3 build_timeline.py
@@ -12,6 +11,7 @@ Usage (from ~/asmap_dashboard/):
 import os
 import re
 import json
+import hashlib
 import subprocess
 import datetime
 from collections import Counter
@@ -21,6 +21,12 @@ ASMAP_TOOL = os.path.expanduser("~/bitcoin/contrib/asmap/asmap-tool.py")
 OUTPUT_FILE = "timeline.json"
 
 ASN_TRANSITION_RE = re.compile(r'(AS\d+)\s*#\s*was\s+(AS\d+)')
+
+
+def median(values):
+    s = sorted(values)
+    n = len(s)
+    return s[n // 2] if n % 2 else (s[n // 2 - 1] + s[n // 2]) / 2
 
 
 def discover_maps():
@@ -47,7 +53,7 @@ def run_tool(args):
         capture_output=True, text=True
     )
     if result.returncode != 0:
-        print(f"  Warning: tool stderr: {result.stderr[:300]}")
+        print(f"  Warning: {result.stderr[:200]}")
     return result.stdout
 
 
@@ -67,21 +73,20 @@ def decode_map(path):
         elif ':' in prefix:
             ipv6_prefixes += 1
         if asn_str.startswith('AS'):
-            try:
-                asn_counts[int(asn_str[2:])] += 1
-            except ValueError:
-                pass
+            asn_counts[asn_str] += 1
 
+    asn_set = set(asn_counts.keys())
     return {
         'total_prefixes': ipv4_prefixes + ipv6_prefixes,
         'ipv4_prefixes': ipv4_prefixes,
         'ipv6_prefixes': ipv6_prefixes,
-        'total_asns': len(asn_counts),
-        'top_asns': [{'asn': asn, 'count': cnt} for asn, cnt in asn_counts.most_common(10)],
+        'total_asns': len(asn_set),
+        'top_asns': [{'asn': asn, 'count': cnt} for asn, cnt in asn_counts.most_common(15)],
+        '_asn_set': asn_set,
     }
 
 
-def compute_diff(prev_path, next_path):
+def compute_diff(prev_path, next_path, prev_asn_set, next_asn_set):
     output = run_tool(['diff', prev_path, next_path])
     ipv4_changes = 0
     ipv6_changes = 0
@@ -106,7 +111,59 @@ def compute_diff(prev_path, next_path):
     return {
         'ipv4_changes': ipv4_changes,
         'ipv6_changes': ipv6_changes,
-        'top_asn_pairs': [list(pair) for pair, _ in pair_counts.most_common(5)],
+        'top_asn_pairs': [[old, new, cnt] for (old, new), cnt in pair_counts.most_common(10)],
+        'asns_gained': len(next_asn_set - prev_asn_set),
+        'asns_lost': len(prev_asn_set - next_asn_set),
+    }
+
+
+def _h(s):
+    return hashlib.sha256(s.encode()).hexdigest()[:16]
+
+
+def make_manifest(epoch, date_str, mismatch=False):
+    year, month = int(date_str[:4]), int(date_str[5:7])
+    if mismatch:
+        rv_month = month - 2
+        rv_year = year
+        if rv_month <= 0:
+            rv_month += 12
+            rv_year -= 1
+        routeviews_month = f"{rv_year:04d}-{rv_month:02d}"
+        fallback = True
+    else:
+        routeviews_month = date_str[:7]
+        fallback = False
+
+    v = epoch % 100
+    return {
+        "kartograf_version": "0.4.13",
+        "rpki_client_version": "9.7",
+        "epoch": epoch,
+        "rpki": {
+            "repos_total": 13,
+            "repos_success": 13,
+            "repos_failed": [],
+            "cache_hash": _h(f"rpki_{epoch}"),
+        },
+        "irr": {
+            "databases": ["afrinic", "apnic_route", "apnic_route6", "arin", "lacnic", "ripe_route", "ripe_route6"],
+            "retries": 0,
+            "fetch_duration_seconds": 45 + v // 10,
+        },
+        "routeviews": {
+            "month_used": routeviews_month,
+            "fallback_triggered": fallback,
+            "ipv4_file_hash": _h(f"rv4_{epoch}"),
+            "ipv6_file_hash": _h(f"rv6_{epoch}"),
+        },
+        "timing": {
+            "rpki_fetch_seconds": 320 + v,
+            "irr_fetch_seconds": 45 + v // 5,
+            "routeviews_fetch_seconds": 12 + v // 20,
+            "merge_seconds": 180 + v // 2,
+            "total_seconds": 557 + v,
+        },
     }
 
 
@@ -119,47 +176,86 @@ if __name__ == "__main__":
         print("Need at least 2 maps to compute diffs. Exiting.")
         raise SystemExit(1)
 
+    mismatch_idx = len(maps) // 2
+
     print("\nDecoding maps...")
     map_records = []
-    for mp in maps:
-        print(f"  {mp['date']}  {os.path.basename(mp['path'])}")
+    for i, mp in enumerate(maps):
+        print(f"  [{i+1}/{len(maps)}] {mp['date']}  {os.path.basename(mp['path'])}")
         metrics = decode_map(mp['path'])
-        map_records.append({'epoch': mp['epoch'], 'date': mp['date'], **metrics})
+        asn_set = metrics.pop('_asn_set')
+        manifest = make_manifest(mp['epoch'], mp['date'], mismatch=(i == mismatch_idx))
+        map_records.append({
+            'epoch': mp['epoch'],
+            'date': mp['date'],
+            'manifest': manifest,
+            **metrics,
+            '_asn_set': asn_set,
+        })
 
     print("\nComputing diffs...")
     diff_records = []
     for i in range(1, len(maps)):
-        prev, curr = maps[i - 1], maps[i]
-        print(f"  {prev['date']} → {curr['date']}")
-        diff = compute_diff(prev['path'], curr['path'])
+        prev_rec, curr_rec = map_records[i - 1], map_records[i]
+        print(f"  {prev_rec['date']} → {curr_rec['date']}")
+        diff = compute_diff(
+            maps[i - 1]['path'], maps[i]['path'],
+            prev_rec['_asn_set'], curr_rec['_asn_set'],
+        )
 
-        prev_ipv4 = map_records[i - 1]['ipv4_prefixes']
+        days_between = round((maps[i]['epoch'] - maps[i - 1]['epoch']) / 86400, 1)
+        monthly_normalized = round(diff['ipv4_changes'] * 30 / days_between, 1) if days_between > 0 else diff['ipv4_changes']
+
+        prev_ipv4 = prev_rec['ipv4_prefixes']
         churn_ratio = round(diff['ipv4_changes'] / prev_ipv4, 6) if prev_ipv4 > 0 else 0.0
+        monthly_churn_ratio = round(monthly_normalized / prev_ipv4, 6) if prev_ipv4 > 0 else 0.0
 
-        prior_ipv4_changes = [d['ipv4_changes'] for d in diff_records]
-        if not prior_ipv4_changes:
-            baseline = None
+        # Baseline: median of all prior monthly-normalized values
+        prior_normalized = [d['monthly_normalized_changes'] for d in diff_records]
+        if len(prior_normalized) < 2:
+            baseline_mean = None
+            baseline_lower = None
+            baseline_upper = None
             classification = 'insufficient_data'
         else:
-            mean = sum(prior_ipv4_changes) / len(prior_ipv4_changes)
-            lower = int(mean * 0.8)
-            upper = int(mean * 1.2)
-            baseline = {'mean': int(mean), 'lower_bound': lower, 'upper_bound': upper}
-            classification = 'normal' if lower <= diff['ipv4_changes'] <= upper else 'suspicious'
+            med = median(prior_normalized)
+            lower = int(med * 0.7)
+            upper = int(med * 1.3)
+            baseline_mean = int(med)
+            baseline_lower = lower
+            baseline_upper = upper
+            classification = 'normal' if lower <= monthly_normalized <= upper else 'anomalous'
 
         diff_records.append({
-            'from_date': prev['date'],
-            'to_date': curr['date'],
+            'from_date': prev_rec['date'],
+            'to_date': curr_rec['date'],
+            'days_between': days_between,
             'ipv4_changes': diff['ipv4_changes'],
             'ipv6_changes': diff['ipv6_changes'],
+            'monthly_normalized_changes': monthly_normalized,
             'churn_ratio': churn_ratio,
-            'baseline': baseline,
-            'classification': classification,
+            'monthly_churn_ratio': monthly_churn_ratio,
+            'asns_gained': diff['asns_gained'],
+            'asns_lost': diff['asns_lost'],
             'top_asn_pairs': diff['top_asn_pairs'],
+            'baseline_mean': baseline_mean,
+            'baseline_lower': baseline_lower,
+            'baseline_upper': baseline_upper,
+            'classification': classification,
         })
 
-    timeline = {'maps': map_records, 'diffs': diff_records}
+    clean_maps = [{k: v for k, v in rec.items() if k != '_asn_set'} for rec in map_records]
+
+    timeline = {
+        'generated_at': datetime.datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%SZ'),
+        'maps': clean_maps,
+        'diffs': diff_records,
+    }
+
     with open(OUTPUT_FILE, 'w') as f:
         json.dump(timeline, f, indent=2)
 
-    print(f"\nWrote {OUTPUT_FILE}  ({len(map_records)} maps, {len(diff_records)} diffs)")
+    print(f"\nWrote {OUTPUT_FILE}  ({len(clean_maps)} maps, {len(diff_records)} diffs)")
+    anomalous = sum(1 for d in diff_records if d['classification'] == 'anomalous')
+    normal    = sum(1 for d in diff_records if d['classification'] == 'normal')
+    print(f"Classifications: {normal} normal, {anomalous} anomalous, {len(diff_records)-normal-anomalous} insufficient_data")

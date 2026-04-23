@@ -1,104 +1,45 @@
-# ASmap Historical Analysis Dashboard
+# ASMap Analysis Dashboard
 
-A static analysis tool for the Bitcoin Core ASmap project that tracks how autonomous system maps evolve over time, detects anomalies, and visualises historical churn.
+Historical analysis and investigation tool for Bitcoin Core ASMap files.
 
-## Purpose
-
-Bitcoin Core uses ASmap files to diversify peer connections across autonomous systems (ASes). This dashboard helps researchers and operators understand:
-
-- How many prefixes change between consecutive ASmap runs
-- Whether observed churn is within a normal baseline or suspicious
-- Which ASNs are involved in the most transitions
-- Long-term trends in total prefix and ASN counts
-
-## Architecture
-
-```
-~/asmap-data/**/*.dat  (raw ASmap files, one per run)
-        │
-        ▼
- build_timeline.py     ← decodes each map, diffs consecutive pairs,
-        │                 writes timeline.json
-        ▼
- timeline.json         ← structured metrics for all maps and diffs
-        │
-        ▼
- index.html / app.js   ← static dashboard: charts, summary card, table
-```
-
-## Tech Stack
-
-| Layer    | Technology                          |
-|----------|-------------------------------------|
-| Backend  | Python 3 (standard library only)    |
-| Frontend | Vanilla HTML + JavaScript           |
-| Charts   | Chart.js v4 (CDN)                   |
-| Styling  | Pico.css v2 (CDN) + style.css       |
-| Data     | timeline.json (generated)           |
-
-## Directory Layout
-
-```
-asmap_dashboard/
-├── build_timeline.py   # generates timeline.json from ASmap data
-├── timeline.json       # generated — do not edit manually
-├── index.html          # dashboard entry point
-├── app.js              # frontend logic
-├── style.css           # custom styles
-├── data/               # legacy single-run artefacts
-├── engine/
-│   ├── diff_extractor.py
-│   └── compare_runs.py
-└── ui/                 # legacy single-run UI
-```
-
-## Usage
+## Quick Start
 
 ```bash
-cd ~/asmap_dashboard
-
-# Generate timeline.json from all maps under ~/asmap-data/
+# Generate timeline data from local asmap-data
 python3 build_timeline.py
 
 # Serve the dashboard
 python3 -m http.server 8000
+
+# Open http://localhost:8000
 ```
 
-Open `http://localhost:8000` in a browser.
+## What This Shows
 
-## Data Requirements
+- **Real data**: All maps from the asmap-data repository, decoded and diffed
+- **Churn trends**: How many IP prefix → ASN mappings change between runs
+- **Anomaly detection**: Baseline-aware classification of each diff (±30% of historical mean)
+- **Investigation flow**: Click any data point on the churn chart to drill into ASN transitions and run provenance
+- **Mock manifests**: Simulated run metadata demonstrating what Kartograf could produce (one run intentionally shows a RouteViews fallback to demonstrate the April 2 divergence scenario)
 
-- ASmap `.dat` files under `~/asmap-data/` (organised in year subdirectories)
-- `~/bitcoin/contrib/asmap/asmap-tool.py` must be present
-- Files named `latest_asmap.dat` or containing "unfilled" are automatically skipped
-- At least 2 maps are required to compute any diffs
+## Architecture
 
-## Output: timeline.json
+- Backend: Python 3 (stdlib only), calls asmap-tool.py for decode/diff
+- Frontend: Vanilla JS + Chart.js, single HTML file — no build step, no frameworks
+- Data: `timeline.json` generated locally, served statically
 
-```json
-{
-  "maps": [
-    {
-      "epoch": 1767888000,
-      "date": "2026-01-08",
-      "total_prefixes": 500000,
-      "ipv4_prefixes": 400000,
-      "ipv6_prefixes": 100000,
-      "total_asns": 12345,
-      "top_asns": [{"asn": 4134, "count": 2345}, ...]
-    }
-  ],
-  "diffs": [
-    {
-      "from_date": "2026-01-08",
-      "to_date": "2026-02-05",
-      "ipv4_changes": 15319,
-      "ipv6_changes": 5949,
-      "churn_ratio": 0.038,
-      "baseline": {"mean": 14000, "lower_bound": 11200, "upper_bound": 16800},
-      "classification": "normal",
-      "top_asn_pairs": [["AS14618", "AS16509"], ...]
-    }
-  ]
-}
+## File Structure
+
 ```
+asmap_dashboard/
+├── build_timeline.py   # generates timeline.json
+├── index.html          # single-file dashboard (CSS + JS embedded)
+├── timeline.json       # generated — do not edit
+└── README.md
+```
+
+## Requirements
+
+- `~/asmap-data/` with at least 2 `*_asmap.dat` files (skip files named "latest" or "unfilled")
+- `~/bitcoin/contrib/asmap/asmap-tool.py` present
+- Python 3.7+

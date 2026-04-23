@@ -1,402 +1,859 @@
 {
+  "generated_at": "2026-04-23T13:46:26Z",
   "maps": [
     {
       "epoch": 1742572800,
       "date": "2025-03-21",
+      "manifest": {
+        "kartograf_version": "0.4.13",
+        "rpki_client_version": "9.7",
+        "epoch": 1742572800,
+        "rpki": {
+          "repos_total": 13,
+          "repos_success": 13,
+          "repos_failed": [],
+          "cache_hash": "f8d3b68a5baef14f"
+        },
+        "irr": {
+          "databases": [
+            "afrinic",
+            "apnic_route",
+            "apnic_route6",
+            "arin",
+            "lacnic",
+            "ripe_route",
+            "ripe_route6"
+          ],
+          "retries": 0,
+          "fetch_duration_seconds": 45
+        },
+        "routeviews": {
+          "month_used": "2025-03",
+          "fallback_triggered": false,
+          "ipv4_file_hash": "c8efc9e1e64ef74d",
+          "ipv6_file_hash": "88145e5f5f69bc60"
+        },
+        "timing": {
+          "rpki_fetch_seconds": 320,
+          "irr_fetch_seconds": 45,
+          "routeviews_fetch_seconds": 12,
+          "merge_seconds": 180,
+          "total_seconds": 557
+        }
+      },
       "total_prefixes": 377653,
       "ipv4_prefixes": 302396,
       "ipv6_prefixes": 75257,
       "total_asns": 88835,
       "top_asns": [
         {
-          "asn": 3356,
+          "asn": "AS3356",
           "count": 1775
         },
         {
-          "asn": 14618,
+          "asn": "AS14618",
           "count": 1738
         },
         {
-          "asn": 174,
+          "asn": "AS174",
           "count": 1330
         },
         {
-          "asn": 20940,
+          "asn": "AS20940",
           "count": 1280
         },
         {
-          "asn": 36183,
+          "asn": "AS36183",
           "count": 1256
         },
         {
-          "asn": 17622,
+          "asn": "AS17622",
           "count": 1174
         },
         {
-          "asn": 16509,
+          "asn": "AS16509",
           "count": 1148
         },
         {
-          "asn": 9009,
+          "asn": "AS9009",
           "count": 1146
         },
         {
-          "asn": 7018,
+          "asn": "AS7018",
           "count": 1121
         },
         {
-          "asn": 4134,
+          "asn": "AS4134",
           "count": 1090
+        },
+        {
+          "asn": "AS212238",
+          "count": 1075
+        },
+        {
+          "asn": "AS140292",
+          "count": 1052
+        },
+        {
+          "asn": "AS16625",
+          "count": 885
+        },
+        {
+          "asn": "AS721",
+          "count": 828
+        },
+        {
+          "asn": "AS834",
+          "count": 804
         }
       ]
     },
     {
       "epoch": 1755187200,
       "date": "2025-08-14",
+      "manifest": {
+        "kartograf_version": "0.4.13",
+        "rpki_client_version": "9.7",
+        "epoch": 1755187200,
+        "rpki": {
+          "repos_total": 13,
+          "repos_success": 13,
+          "repos_failed": [],
+          "cache_hash": "eb81f8927319cd5e"
+        },
+        "irr": {
+          "databases": [
+            "afrinic",
+            "apnic_route",
+            "apnic_route6",
+            "arin",
+            "lacnic",
+            "ripe_route",
+            "ripe_route6"
+          ],
+          "retries": 0,
+          "fetch_duration_seconds": 45
+        },
+        "routeviews": {
+          "month_used": "2025-08",
+          "fallback_triggered": false,
+          "ipv4_file_hash": "143911842d24bb7c",
+          "ipv6_file_hash": "ba1e89414112516c"
+        },
+        "timing": {
+          "rpki_fetch_seconds": 320,
+          "irr_fetch_seconds": 45,
+          "routeviews_fetch_seconds": 12,
+          "merge_seconds": 180,
+          "total_seconds": 557
+        }
+      },
       "total_prefixes": 385660,
       "ipv4_prefixes": 308664,
       "ipv6_prefixes": 76996,
       "total_asns": 89306,
       "top_asns": [
         {
-          "asn": 14618,
+          "asn": "AS14618",
           "count": 1847
         },
         {
-          "asn": 3356,
+          "asn": "AS3356",
           "count": 1817
         },
         {
-          "asn": 174,
+          "asn": "AS174",
           "count": 1331
         },
         {
-          "asn": 36183,
+          "asn": "AS36183",
           "count": 1320
         },
         {
-          "asn": 20940,
+          "asn": "AS20940",
           "count": 1287
         },
         {
-          "asn": 16509,
+          "asn": "AS16509",
           "count": 1284
         },
         {
-          "asn": 9009,
+          "asn": "AS9009",
           "count": 1277
         },
         {
-          "asn": 212238,
+          "asn": "AS212238",
           "count": 1207
         },
         {
-          "asn": 17622,
+          "asn": "AS17622",
           "count": 1174
         },
         {
-          "asn": 19905,
+          "asn": "AS19905",
           "count": 1075
+        },
+        {
+          "asn": "AS4134",
+          "count": 1032
+        },
+        {
+          "asn": "AS140292",
+          "count": 999
+        },
+        {
+          "asn": "AS834",
+          "count": 942
+        },
+        {
+          "asn": "AS16625",
+          "count": 865
+        },
+        {
+          "asn": "AS721",
+          "count": 856
         }
       ]
     },
     {
       "epoch": 1757606400,
       "date": "2025-09-11",
+      "manifest": {
+        "kartograf_version": "0.4.13",
+        "rpki_client_version": "9.7",
+        "epoch": 1757606400,
+        "rpki": {
+          "repos_total": 13,
+          "repos_success": 13,
+          "repos_failed": [],
+          "cache_hash": "a7c50b8660b356b3"
+        },
+        "irr": {
+          "databases": [
+            "afrinic",
+            "apnic_route",
+            "apnic_route6",
+            "arin",
+            "lacnic",
+            "ripe_route",
+            "ripe_route6"
+          ],
+          "retries": 0,
+          "fetch_duration_seconds": 45
+        },
+        "routeviews": {
+          "month_used": "2025-09",
+          "fallback_triggered": false,
+          "ipv4_file_hash": "b379ef622a7f56d4",
+          "ipv6_file_hash": "62a57deb16c7bb46"
+        },
+        "timing": {
+          "rpki_fetch_seconds": 320,
+          "irr_fetch_seconds": 45,
+          "routeviews_fetch_seconds": 12,
+          "merge_seconds": 180,
+          "total_seconds": 557
+        }
+      },
       "total_prefixes": 387376,
       "ipv4_prefixes": 309805,
       "ipv6_prefixes": 77571,
       "total_asns": 89414,
       "top_asns": [
         {
-          "asn": 14618,
+          "asn": "AS14618",
           "count": 1851
         },
         {
-          "asn": 3356,
+          "asn": "AS3356",
           "count": 1772
         },
         {
-          "asn": 36183,
+          "asn": "AS36183",
           "count": 1321
         },
         {
-          "asn": 174,
+          "asn": "AS174",
           "count": 1314
         },
         {
-          "asn": 16509,
+          "asn": "AS16509",
           "count": 1294
         },
         {
-          "asn": 20940,
+          "asn": "AS20940",
           "count": 1286
         },
         {
-          "asn": 9009,
+          "asn": "AS9009",
           "count": 1255
         },
         {
-          "asn": 212238,
+          "asn": "AS212238",
           "count": 1247
         },
         {
-          "asn": 17622,
+          "asn": "AS17622",
           "count": 1174
         },
         {
-          "asn": 19905,
+          "asn": "AS19905",
           "count": 1113
+        },
+        {
+          "asn": "AS4134",
+          "count": 1071
+        },
+        {
+          "asn": "AS140292",
+          "count": 999
+        },
+        {
+          "asn": "AS834",
+          "count": 901
+        },
+        {
+          "asn": "AS9304",
+          "count": 897
+        },
+        {
+          "asn": "AS721",
+          "count": 881
         }
       ]
     },
     {
       "epoch": 1762444800,
       "date": "2025-11-06",
+      "manifest": {
+        "kartograf_version": "0.4.13",
+        "rpki_client_version": "9.7",
+        "epoch": 1762444800,
+        "rpki": {
+          "repos_total": 13,
+          "repos_success": 13,
+          "repos_failed": [],
+          "cache_hash": "1282a7086173c375"
+        },
+        "irr": {
+          "databases": [
+            "afrinic",
+            "apnic_route",
+            "apnic_route6",
+            "arin",
+            "lacnic",
+            "ripe_route",
+            "ripe_route6"
+          ],
+          "retries": 0,
+          "fetch_duration_seconds": 45
+        },
+        "routeviews": {
+          "month_used": "2025-11",
+          "fallback_triggered": false,
+          "ipv4_file_hash": "e5f77c60de1f590a",
+          "ipv6_file_hash": "0e35a9e9dc7c8435"
+        },
+        "timing": {
+          "rpki_fetch_seconds": 320,
+          "irr_fetch_seconds": 45,
+          "routeviews_fetch_seconds": 12,
+          "merge_seconds": 180,
+          "total_seconds": 557
+        }
+      },
       "total_prefixes": 391254,
       "ipv4_prefixes": 312482,
       "ipv6_prefixes": 78772,
       "total_asns": 89741,
       "top_asns": [
         {
-          "asn": 14618,
+          "asn": "AS14618",
           "count": 2227
         },
         {
-          "asn": 3356,
+          "asn": "AS3356",
           "count": 1748
         },
         {
-          "asn": 4134,
+          "asn": "AS4134",
           "count": 1420
         },
         {
-          "asn": 16509,
+          "asn": "AS16509",
           "count": 1359
         },
         {
-          "asn": 212238,
+          "asn": "AS212238",
           "count": 1354
         },
         {
-          "asn": 36183,
+          "asn": "AS36183",
           "count": 1321
         },
         {
-          "asn": 20940,
+          "asn": "AS20940",
           "count": 1285
         },
         {
-          "asn": 9009,
+          "asn": "AS9009",
           "count": 1277
         },
         {
-          "asn": 174,
+          "asn": "AS174",
           "count": 1273
         },
         {
-          "asn": 19905,
+          "asn": "AS19905",
           "count": 1209
+        },
+        {
+          "asn": "AS17622",
+          "count": 1174
+        },
+        {
+          "asn": "AS834",
+          "count": 1036
+        },
+        {
+          "asn": "AS9304",
+          "count": 955
+        },
+        {
+          "asn": "AS140292",
+          "count": 934
+        },
+        {
+          "asn": "AS3257",
+          "count": 892
         }
       ]
     },
     {
       "epoch": 1764864000,
       "date": "2025-12-04",
+      "manifest": {
+        "kartograf_version": "0.4.13",
+        "rpki_client_version": "9.7",
+        "epoch": 1764864000,
+        "rpki": {
+          "repos_total": 13,
+          "repos_success": 13,
+          "repos_failed": [],
+          "cache_hash": "f01bbc08a1c81990"
+        },
+        "irr": {
+          "databases": [
+            "afrinic",
+            "apnic_route",
+            "apnic_route6",
+            "arin",
+            "lacnic",
+            "ripe_route",
+            "ripe_route6"
+          ],
+          "retries": 0,
+          "fetch_duration_seconds": 45
+        },
+        "routeviews": {
+          "month_used": "2025-10",
+          "fallback_triggered": true,
+          "ipv4_file_hash": "1156e8571e2c3525",
+          "ipv6_file_hash": "b5402db13bdb22c1"
+        },
+        "timing": {
+          "rpki_fetch_seconds": 320,
+          "irr_fetch_seconds": 45,
+          "routeviews_fetch_seconds": 12,
+          "merge_seconds": 180,
+          "total_seconds": 557
+        }
+      },
       "total_prefixes": 393335,
       "ipv4_prefixes": 314082,
       "ipv6_prefixes": 79253,
       "total_asns": 89879,
       "top_asns": [
         {
-          "asn": 14618,
+          "asn": "AS14618",
           "count": 2399
         },
         {
-          "asn": 3356,
+          "asn": "AS3356",
           "count": 1761
         },
         {
-          "asn": 4134,
+          "asn": "AS4134",
           "count": 1477
         },
         {
-          "asn": 16509,
+          "asn": "AS16509",
           "count": 1407
         },
         {
-          "asn": 212238,
+          "asn": "AS212238",
           "count": 1363
         },
         {
-          "asn": 36183,
+          "asn": "AS36183",
           "count": 1317
         },
         {
-          "asn": 834,
+          "asn": "AS834",
           "count": 1314
         },
         {
-          "asn": 9009,
+          "asn": "AS9009",
           "count": 1296
         },
         {
-          "asn": 20940,
+          "asn": "AS20940",
           "count": 1280
         },
         {
-          "asn": 19905,
+          "asn": "AS19905",
           "count": 1266
+        },
+        {
+          "asn": "AS174",
+          "count": 1247
+        },
+        {
+          "asn": "AS17622",
+          "count": 1175
+        },
+        {
+          "asn": "AS140292",
+          "count": 930
+        },
+        {
+          "asn": "AS721",
+          "count": 885
+        },
+        {
+          "asn": "AS3257",
+          "count": 879
         }
       ]
     },
     {
       "epoch": 1767888000,
       "date": "2026-01-08",
+      "manifest": {
+        "kartograf_version": "0.4.13",
+        "rpki_client_version": "9.7",
+        "epoch": 1767888000,
+        "rpki": {
+          "repos_total": 13,
+          "repos_success": 13,
+          "repos_failed": [],
+          "cache_hash": "7790d36e4b944f7c"
+        },
+        "irr": {
+          "databases": [
+            "afrinic",
+            "apnic_route",
+            "apnic_route6",
+            "arin",
+            "lacnic",
+            "ripe_route",
+            "ripe_route6"
+          ],
+          "retries": 0,
+          "fetch_duration_seconds": 45
+        },
+        "routeviews": {
+          "month_used": "2026-01",
+          "fallback_triggered": false,
+          "ipv4_file_hash": "4aa5bfe6a7805055",
+          "ipv6_file_hash": "38cf7f6113f863d6"
+        },
+        "timing": {
+          "rpki_fetch_seconds": 320,
+          "irr_fetch_seconds": 45,
+          "routeviews_fetch_seconds": 12,
+          "merge_seconds": 180,
+          "total_seconds": 557
+        }
+      },
       "total_prefixes": 395389,
       "ipv4_prefixes": 315702,
       "ipv6_prefixes": 79687,
       "total_asns": 90243,
       "top_asns": [
         {
-          "asn": 14618,
+          "asn": "AS14618",
           "count": 2380
         },
         {
-          "asn": 3356,
+          "asn": "AS3356",
           "count": 1768
         },
         {
-          "asn": 4134,
+          "asn": "AS4134",
           "count": 1533
         },
         {
-          "asn": 16509,
+          "asn": "AS16509",
           "count": 1500
         },
         {
-          "asn": 834,
+          "asn": "AS834",
           "count": 1411
         },
         {
-          "asn": 212238,
+          "asn": "AS212238",
           "count": 1394
         },
         {
-          "asn": 19905,
+          "asn": "AS19905",
           "count": 1389
         },
         {
-          "asn": 36183,
+          "asn": "AS36183",
           "count": 1317
         },
         {
-          "asn": 9009,
+          "asn": "AS9009",
           "count": 1297
         },
         {
-          "asn": 20940,
+          "asn": "AS20940",
           "count": 1282
+        },
+        {
+          "asn": "AS174",
+          "count": 1223
+        },
+        {
+          "asn": "AS17622",
+          "count": 1175
+        },
+        {
+          "asn": "AS140292",
+          "count": 924
+        },
+        {
+          "asn": "AS721",
+          "count": 895
+        },
+        {
+          "asn": "AS16625",
+          "count": 876
         }
       ]
     },
     {
       "epoch": 1770307200,
       "date": "2026-02-05",
+      "manifest": {
+        "kartograf_version": "0.4.13",
+        "rpki_client_version": "9.7",
+        "epoch": 1770307200,
+        "rpki": {
+          "repos_total": 13,
+          "repos_success": 13,
+          "repos_failed": [],
+          "cache_hash": "7faf2139915f3676"
+        },
+        "irr": {
+          "databases": [
+            "afrinic",
+            "apnic_route",
+            "apnic_route6",
+            "arin",
+            "lacnic",
+            "ripe_route",
+            "ripe_route6"
+          ],
+          "retries": 0,
+          "fetch_duration_seconds": 45
+        },
+        "routeviews": {
+          "month_used": "2026-02",
+          "fallback_triggered": false,
+          "ipv4_file_hash": "e0b14d99c61b020a",
+          "ipv6_file_hash": "220781234b4cfbfa"
+        },
+        "timing": {
+          "rpki_fetch_seconds": 320,
+          "irr_fetch_seconds": 45,
+          "routeviews_fetch_seconds": 12,
+          "merge_seconds": 180,
+          "total_seconds": 557
+        }
+      },
       "total_prefixes": 397278,
       "ipv4_prefixes": 317043,
       "ipv6_prefixes": 80235,
       "total_asns": 90368,
       "top_asns": [
         {
-          "asn": 14618,
+          "asn": "AS14618",
           "count": 2429
         },
         {
-          "asn": 3356,
+          "asn": "AS3356",
           "count": 1809
         },
         {
-          "asn": 4134,
+          "asn": "AS4134",
           "count": 1529
         },
         {
-          "asn": 16509,
+          "asn": "AS16509",
           "count": 1495
         },
         {
-          "asn": 834,
+          "asn": "AS834",
           "count": 1488
         },
         {
-          "asn": 212238,
+          "asn": "AS212238",
           "count": 1399
         },
         {
-          "asn": 19905,
+          "asn": "AS19905",
           "count": 1342
         },
         {
-          "asn": 36183,
+          "asn": "AS36183",
           "count": 1317
         },
         {
-          "asn": 9009,
+          "asn": "AS9009",
           "count": 1298
         },
         {
-          "asn": 20940,
+          "asn": "AS20940",
           "count": 1274
+        },
+        {
+          "asn": "AS174",
+          "count": 1246
+        },
+        {
+          "asn": "AS17622",
+          "count": 1174
+        },
+        {
+          "asn": "AS140292",
+          "count": 961
+        },
+        {
+          "asn": "AS721",
+          "count": 893
+        },
+        {
+          "asn": "AS16625",
+          "count": 877
         }
       ]
     },
     {
       "epoch": 1772726400,
       "date": "2026-03-05",
+      "manifest": {
+        "kartograf_version": "0.4.13",
+        "rpki_client_version": "9.7",
+        "epoch": 1772726400,
+        "rpki": {
+          "repos_total": 13,
+          "repos_success": 13,
+          "repos_failed": [],
+          "cache_hash": "13e29a447ae1fa66"
+        },
+        "irr": {
+          "databases": [
+            "afrinic",
+            "apnic_route",
+            "apnic_route6",
+            "arin",
+            "lacnic",
+            "ripe_route",
+            "ripe_route6"
+          ],
+          "retries": 0,
+          "fetch_duration_seconds": 45
+        },
+        "routeviews": {
+          "month_used": "2026-03",
+          "fallback_triggered": false,
+          "ipv4_file_hash": "733c42e6b1230166",
+          "ipv6_file_hash": "02599403ee23ae76"
+        },
+        "timing": {
+          "rpki_fetch_seconds": 320,
+          "irr_fetch_seconds": 45,
+          "routeviews_fetch_seconds": 12,
+          "merge_seconds": 180,
+          "total_seconds": 557
+        }
+      },
       "total_prefixes": 399450,
       "ipv4_prefixes": 318312,
       "ipv6_prefixes": 81138,
       "total_asns": 90691,
       "top_asns": [
         {
-          "asn": 14618,
+          "asn": "AS14618",
           "count": 2501
         },
         {
-          "asn": 3356,
+          "asn": "AS3356",
           "count": 1778
         },
         {
-          "asn": 834,
+          "asn": "AS834",
           "count": 1667
         },
         {
-          "asn": 16509,
+          "asn": "AS16509",
           "count": 1571
         },
         {
-          "asn": 19905,
+          "asn": "AS19905",
           "count": 1546
         },
         {
-          "asn": 4134,
+          "asn": "AS4134",
           "count": 1538
         },
         {
-          "asn": 212238,
+          "asn": "AS212238",
           "count": 1476
         },
         {
-          "asn": 36183,
+          "asn": "AS36183",
           "count": 1317
         },
         {
-          "asn": 9009,
+          "asn": "AS9009",
           "count": 1308
         },
         {
-          "asn": 20940,
+          "asn": "AS20940",
           "count": 1283
+        },
+        {
+          "asn": "AS174",
+          "count": 1237
+        },
+        {
+          "asn": "AS17622",
+          "count": 1174
+        },
+        {
+          "asn": "AS140292",
+          "count": 962
+        },
+        {
+          "asn": "AS721",
+          "count": 895
+        },
+        {
+          "asn": "AS3257",
+          "count": 894
         }
       ]
     }
@@ -405,243 +862,478 @@
     {
       "from_date": "2025-03-21",
       "to_date": "2025-08-14",
+      "days_between": 146.0,
       "ipv4_changes": 50835,
       "ipv6_changes": 23042,
+      "monthly_normalized_changes": 10445.5,
       "churn_ratio": 0.168107,
-      "baseline": null,
-      "classification": "insufficient_data",
+      "monthly_churn_ratio": 0.034542,
+      "asns_gained": 2608,
+      "asns_lost": 2137,
       "top_asn_pairs": [
         [
           "AS16509",
-          "AS14618"
+          "AS14618",
+          417
         ],
         [
           "AS4152",
-          "AS4155"
+          "AS4155",
+          396
         ],
         [
           "AS62904",
-          "AS30693"
+          "AS30693",
+          390
         ],
         [
           "AS8851",
-          "AS19905"
+          "AS19905",
+          347
         ],
         [
           "AS14618",
-          "AS16509"
+          "AS16509",
+          290
+        ],
+        [
+          "AS12430",
+          "AS6739",
+          282
+        ],
+        [
+          "AS6849",
+          "AS834",
+          269
+        ],
+        [
+          "AS7018",
+          "AS2386",
+          252
+        ],
+        [
+          "AS140292",
+          "AS4134",
+          235
+        ],
+        [
+          "AS36992",
+          "AS15475",
+          232
         ]
-      ]
+      ],
+      "baseline_mean": null,
+      "baseline_lower": null,
+      "baseline_upper": null,
+      "classification": "insufficient_data"
     },
     {
       "from_date": "2025-08-14",
       "to_date": "2025-09-11",
+      "days_between": 28.0,
       "ipv4_changes": 15350,
       "ipv6_changes": 6985,
+      "monthly_normalized_changes": 16446.4,
       "churn_ratio": 0.04973,
-      "baseline": {
-        "mean": 50835,
-        "lower_bound": 40668,
-        "upper_bound": 61002
-      },
-      "classification": "suspicious",
+      "monthly_churn_ratio": 0.053283,
+      "asns_gained": 553,
+      "asns_lost": 445,
       "top_asn_pairs": [
         [
           "AS984",
-          "AS17561"
+          "AS17561",
+          669
         ],
         [
           "AS20473",
-          "AS57878"
+          "AS57878",
+          499
         ],
         [
           "AS14618",
-          "AS16509"
+          "AS16509",
+          455
         ],
         [
           "AS16509",
-          "AS14618"
+          "AS14618",
+          323
         ],
         [
           "AS3491",
-          "AS31713"
+          "AS31713",
+          227
+        ],
+        [
+          "AS834",
+          "AS9304",
+          222
+        ],
+        [
+          "AS3356",
+          "AS203",
+          222
+        ],
+        [
+          "AS44477",
+          "AS209847",
+          192
+        ],
+        [
+          "AS41221",
+          "AS8926",
+          124
+        ],
+        [
+          "AS984",
+          "AS203020",
+          118
         ]
-      ]
+      ],
+      "baseline_mean": null,
+      "baseline_lower": null,
+      "baseline_upper": null,
+      "classification": "insufficient_data"
     },
     {
       "from_date": "2025-09-11",
       "to_date": "2025-11-06",
+      "days_between": 56.0,
       "ipv4_changes": 26637,
       "ipv6_changes": 10103,
+      "monthly_normalized_changes": 14269.8,
       "churn_ratio": 0.08598,
-      "baseline": {
-        "mean": 33092,
-        "lower_bound": 26474,
-        "upper_bound": 39711
-      },
-      "classification": "normal",
+      "monthly_churn_ratio": 0.046061,
+      "asns_gained": 1043,
+      "asns_lost": 716,
       "top_asn_pairs": [
         [
           "AS4152",
-          "AS4155"
+          "AS4155",
+          1804
         ],
         [
           "AS16509",
-          "AS14618"
+          "AS14618",
+          835
         ],
         [
           "AS4134",
-          "AS140292"
+          "AS140292",
+          592
         ],
         [
           "AS5384",
-          "AS8966"
+          "AS8966",
+          345
         ],
         [
           "AS6739",
-          "AS12430"
+          "AS12430",
+          279
+        ],
+        [
+          "AS19905",
+          "AS28885",
+          238
+        ],
+        [
+          "AS14618",
+          "AS16509",
+          228
+        ],
+        [
+          "AS31713",
+          "AS3491",
+          227
+        ],
+        [
+          "AS21499",
+          "AS20773",
+          212
+        ],
+        [
+          "AS9304",
+          "AS834",
+          209
         ]
-      ]
+      ],
+      "baseline_mean": 13445,
+      "baseline_lower": 9412,
+      "baseline_upper": 17479,
+      "classification": "normal"
     },
     {
       "from_date": "2025-11-06",
       "to_date": "2025-12-04",
+      "days_between": 28.0,
       "ipv4_changes": 14854,
       "ipv6_changes": 6644,
+      "monthly_normalized_changes": 15915.0,
       "churn_ratio": 0.047536,
-      "baseline": {
-        "mean": 30940,
-        "lower_bound": 24752,
-        "upper_bound": 37128
-      },
-      "classification": "suspicious",
+      "monthly_churn_ratio": 0.050931,
+      "asns_gained": 586,
+      "asns_lost": 448,
       "top_asn_pairs": [
         [
           "AS16509",
-          "AS14618"
+          "AS14618",
+          876
         ],
         [
           "AS9304",
-          "AS834"
+          "AS834",
+          324
         ],
         [
           "AS14618",
-          "AS16509"
+          "AS16509",
+          313
         ],
         [
           "AS3491",
-          "AS31713"
+          "AS31713",
+          227
         ],
         [
           "AS33659",
-          "AS33287"
+          "AS33287",
+          189
+        ],
+        [
+          "AS20115",
+          "AS22516",
+          150
+        ],
+        [
+          "AS8987",
+          "AS16509",
+          141
+        ],
+        [
+          "AS205886",
+          "AS834",
+          138
+        ],
+        [
+          "AS13778",
+          "AS198949",
+          131
+        ],
+        [
+          "AS211612",
+          "AS16116",
+          116
         ]
-      ]
+      ],
+      "baseline_mean": 14269,
+      "baseline_lower": 9988,
+      "baseline_upper": 18550,
+      "classification": "normal"
     },
     {
       "from_date": "2025-12-04",
       "to_date": "2026-01-08",
+      "days_between": 35.0,
       "ipv4_changes": 24561,
       "ipv6_changes": 8772,
+      "monthly_normalized_changes": 21052.3,
       "churn_ratio": 0.078199,
-      "baseline": {
-        "mean": 26919,
-        "lower_bound": 21535,
-        "upper_bound": 32302
-      },
-      "classification": "normal",
+      "monthly_churn_ratio": 0.067028,
+      "asns_gained": 1005,
+      "asns_lost": 641,
       "top_asn_pairs": [
         [
           "AS28006",
-          "AS14420"
+          "AS14420",
+          384
         ],
         [
           "AS16509",
-          "AS14618"
+          "AS14618",
+          353
         ],
         [
           "AS14618",
-          "AS16509"
+          "AS16509",
+          310
         ],
         [
           "AS12430",
-          "AS6739"
+          "AS6739",
+          279
         ],
         [
           "AS9808",
-          "AS56045"
+          "AS56045",
+          263
+        ],
+        [
+          "AS1239",
+          "AS174",
+          259
+        ],
+        [
+          "AS9304",
+          "AS834",
+          258
+        ],
+        [
+          "AS15557",
+          "AS198949",
+          232
+        ],
+        [
+          "AS15475",
+          "AS36992",
+          229
+        ],
+        [
+          "AS50710",
+          "AS19905",
+          218
         ]
-      ]
+      ],
+      "baseline_mean": 15092,
+      "baseline_lower": 10564,
+      "baseline_upper": 19620,
+      "classification": "anomalous"
     },
     {
       "from_date": "2026-01-08",
       "to_date": "2026-02-05",
+      "days_between": 28.0,
       "ipv4_changes": 15319,
       "ipv6_changes": 5949,
+      "monthly_normalized_changes": 16413.2,
       "churn_ratio": 0.048524,
-      "baseline": {
-        "mean": 26447,
-        "lower_bound": 21157,
-        "upper_bound": 31736
-      },
-      "classification": "suspicious",
+      "monthly_churn_ratio": 0.05199,
+      "asns_gained": 601,
+      "asns_lost": 476,
       "top_asn_pairs": [
         [
           "AS4812",
-          "AS4811"
+          "AS4811",
+          286
         ],
         [
           "AS14420",
-          "AS27757"
+          "AS27757",
+          254
         ],
         [
           "AS834",
-          "AS9304"
+          "AS9304",
+          252
         ],
         [
           "AS8895",
-          "AS3356"
+          "AS3356",
+          223
         ],
         [
           "AS29066",
-          "AS21499"
+          "AS21499",
+          205
+        ],
+        [
+          "AS60781",
+          "AS154049",
+          153
+        ],
+        [
+          "AS61317",
+          "AS29802",
+          134
+        ],
+        [
+          "AS949",
+          "AS3214",
+          124
+        ],
+        [
+          "AS44559",
+          "AS214238",
+          124
+        ],
+        [
+          "AS19905",
+          "AS8851",
+          124
         ]
-      ]
+      ],
+      "baseline_mean": 15915,
+      "baseline_lower": 11140,
+      "baseline_upper": 20689,
+      "classification": "normal"
     },
     {
       "from_date": "2026-02-05",
       "to_date": "2026-03-05",
+      "days_between": 28.0,
       "ipv4_changes": 14877,
       "ipv6_changes": 7022,
+      "monthly_normalized_changes": 15939.6,
       "churn_ratio": 0.046924,
-      "baseline": {
-        "mean": 24592,
-        "lower_bound": 19674,
-        "upper_bound": 29511
-      },
-      "classification": "suspicious",
+      "monthly_churn_ratio": 0.050276,
+      "asns_gained": 738,
+      "asns_lost": 415,
       "top_asn_pairs": [
         [
           "AS14618",
-          "AS16509"
+          "AS16509",
+          492
         ],
         [
           "AS16509",
-          "AS14618"
+          "AS14618",
+          429
         ],
         [
           "AS30036",
-          "AS19905"
+          "AS19905",
+          399
         ],
         [
           "AS9304",
-          "AS834"
+          "AS834",
+          375
         ],
         [
           "AS19905",
-          "AS199739"
+          "AS199739",
+          218
+        ],
+        [
+          "AS6453",
+          "AS34984",
+          155
+        ],
+        [
+          "AS20115",
+          "AS22516",
+          150
+        ],
+        [
+          "AS39386",
+          "AS25019",
+          135
+        ],
+        [
+          "AS50710",
+          "AS199739",
+          119
+        ],
+        [
+          "AS201115",
+          "AS1299",
+          112
         ]
-      ]
+      ],
+      "baseline_mean": 16164,
+      "baseline_lower": 11314,
+      "baseline_upper": 21013,
+      "classification": "normal"
     }
   ]
 }
