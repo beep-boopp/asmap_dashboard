@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ASmap Dashboard</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css" />
+  <style>
+    #verdict {
+      display: inline-block;
+      padding: 0.4rem 1.2rem;
+      border-radius: 6px;
+      font-size: 1.4rem;
+      font-weight: bold;
+    }
+    #alert-banner {
+      padding: 0.75rem 1rem;
+      border-radius: 6px;
+      margin-bottom: 1rem;
+      font-weight: bold;
+    }
+    .bar-wrap {
+      background: #eee;
+      border-radius: 4px;
+      height: 22px;
+      margin: 0.3rem 0 0.6rem;
+      overflow: hidden;
+    }
+    .bar {
+      height: 100%;
+      border-radius: 4px;
+      transition: width 0.4s ease;
+    }
+    #bar-current { background: #2980b9; }
+    #bar-baseline { background: #7f8c8d; }
+    .bar-label { font-size: 0.85rem; color: #555; }
+  </style>
+</head>
+<body>
+  <main class="container">
+    <h1>ASmap Run Comparison</h1>
+
+    <div id="alert-banner">Loading…</div>
+
+    <div style="margin-bottom:1.5rem;">
+      <span id="verdict">—</span>
+      &nbsp;
+      <button id="refresh-btn">Refresh</button>
+    </div>
+
+    <p id="explanation"></p>
+
+    <div class="grid">
+      <div>
+        <h3>IPv4 Changes</h3>
+        <p id="ipv4-changes">—</p>
+      </div>
+      <div>
+        <h3>Baseline Range</h3>
+        <p id="baseline-range">—</p>
+      </div>
+      <div>
+        <h3>Deviation</h3>
+        <p id="deviation">—</p>
+      </div>
+      <div>
+        <h3>Integrity</h3>
+        <p id="integrity">—</p>
+      </div>
+    </div>
+
+    <h3>Bar Comparison</h3>
+    <p class="bar-label">Current</p>
+    <div class="bar-wrap"><div class="bar" id="bar-current" style="width:0%"></div></div>
+    <p class="bar-label">Baseline</p>
+    <div class="bar-wrap"><div class="bar" id="bar-baseline" style="width:0%"></div></div>
+
+    <h3>Provenance Mismatches</h3>
+    <div id="mismatches">—</div>
+
+    <h3>AWS ASN Pattern Detected</h3>
+    <p id="aws-status">—</p>
+
+    <hr />
+    <p><small>To update data: run <code>python3 engine/compare_runs.py</code> and refresh.</small></p>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>

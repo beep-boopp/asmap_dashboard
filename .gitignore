@@ -1,0 +1,20 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+venv/
+env/
+
+# Data files that are large or generated
+*.dat
+data/*.txt
+data/*.json
+!data/.gitkeep
+
+# Logs and temporary files
+*.log
+*.tmp
+
+# OS junk
+.DS_Store
+Thumbs.db

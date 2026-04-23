@@ -1,0 +1,142 @@
+/* ASmap Dashboard — custom styles layered over Pico.css */
+
+body {
+  background: #f4f6f9;
+}
+
+h1 {
+  margin-bottom: 0.25rem;
+}
+
+.subtitle {
+  color: var(--pico-muted-color);
+  margin-bottom: 2rem;
+  font-size: 0.95rem;
+}
+
+/* ── Alert banner ── */
+#alert-banner {
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+  margin-bottom: 1.5rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+.banner-ok   { background: #d4edda; color: #155724; }
+.banner-warn { background: #fff3cd; color: #856404; }
+.banner-err  { background: #f8d7da; color: #721c24; }
+
+/* ── Summary card ── */
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.stat-card {
+  background: #fff;
+  border-radius: 8px;
+  padding: 1rem 1.2rem;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+}
+
+.stat-card .label {
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #6c757d;
+  margin-bottom: 0.3rem;
+}
+
+.stat-card .value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.badge {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 1rem;
+  font-weight: 700;
+}
+.badge-normal     { background: #d4edda; color: #155724; }
+.badge-suspicious { background: #ffe0b2; color: #7c4400; }
+.badge-unknown    { background: #e2e3e5; color: #383d41; }
+
+/* ── Charts ── */
+.charts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.chart-card {
+  background: #fff;
+  border-radius: 8px;
+  padding: 1.2rem;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+}
+
+.chart-card h3 {
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #495057;
+  margin-bottom: 1rem;
+}
+
+.chart-card canvas {
+  max-height: 220px;
+}
+
+/* ── Map table ── */
+.table-wrap {
+  background: #fff;
+  border-radius: 8px;
+  padding: 1.2rem;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+  overflow-x: auto;
+  margin-bottom: 2rem;
+}
+
+.table-wrap h2 {
+  font-size: 1rem;
+  margin-bottom: 1rem;
+}
+
+table {
+  width: 100%;
+  font-size: 0.88rem;
+}
+
+th {
+  white-space: nowrap;
+  color: #6c757d;
+  font-weight: 600;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+td.churn-normal     { color: #155724; font-weight: 600; }
+td.churn-suspicious { color: #7c4400; font-weight: 600; }
+td.churn-na         { color: #adb5bd; }
+
+/* ── Toolbar ── */
+.toolbar {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 1.5rem;
+}
+
+/* ── Footer ── */
+footer {
+  text-align: center;
+  color: #adb5bd;
+  font-size: 0.82rem;
+  padding: 1.5rem 0;
+}
